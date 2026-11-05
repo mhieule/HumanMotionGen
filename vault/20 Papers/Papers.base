@@ -1,0 +1,16 @@
+filters:
+  and:
+    - file.inFolder("20 Papers")
+    - file.ext == "md"
+views:
+  - type: table
+    name: Papers
+    order:
+      - file.name
+      - title
+      - year
+      - venue
+      - tags
+    sort:
+      - property: year
+        direction: DESC

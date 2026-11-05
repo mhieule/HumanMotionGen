@@ -1,0 +1,23 @@
+# Use through ../mdm.sh, which sets the build context and your uid/gid.
+services:
+  mdm:
+    image: mdm-3060:latest
+    build:
+      context: .
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    working_dir: /mdm
+    volumes:
+      # Everything large or generated lives in ../mdm_assets on the host.
+      - ../mdm_assets/dataset/HumanML3D:/mdm/dataset/HumanML3D
+      - ../mdm_assets/body_models/smpl:/mdm/body_models/smpl
+      - ../mdm_assets/glove:/mdm/glove
+      - ../mdm_assets/save:/mdm/save
+      - ../mdm_assets/gt_vis:/mdm/gt_vis
+      - ../scripts:/mdm/scripts:ro
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

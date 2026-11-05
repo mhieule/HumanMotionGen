@@ -1,0 +1,31 @@
+filters:
+  and:
+    - file.inFolder("60 Experiments")
+    - file.hasTag("experiment")
+views:
+  - type: table
+    name: All experiments
+    order:
+      - file.name
+      - status
+      - date
+      - model
+      - target
+      - baseline
+      - fid
+      - r_precision_top3
+      - gpu_hours
+    sort:
+      - property: file.name
+        direction: DESC
+  - type: table
+    name: Open
+    filters:
+      or:
+        - status == "planned"
+        - status == "running"
+    order:
+      - file.name
+      - status
+      - model
+      - date

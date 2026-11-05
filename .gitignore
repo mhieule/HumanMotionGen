@@ -1,0 +1,38 @@
+# Large assets: datasets, checkpoints, body models (~15 GB).
+# Re-create with scripts/fetch_assets.sh.
+mdm_assets/
+
+# Docker CLI state (mdm.sh points DOCKER_CONFIG here); `docker login` stores credentials in it
+docker/client-config/
+
+# Obsidian per-machine UI state
+vault/.obsidian/workspace.json
+vault/.obsidian/workspace-mobile.json
+vault/.trash/
+
+# Leftover backup from moving the vault
+vault.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Model outputs
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+*.mp4
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+Zone.Identifier
+*:Zone.Identifier
+.vscode/
+.idea/
