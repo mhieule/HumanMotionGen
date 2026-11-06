@@ -9,7 +9,7 @@ export DOCKER_CONFIG="$here/docker/client-config"
 dc() { docker compose -f "$here/docker/compose.yaml" "$@"; }
 
 # Bind-mount sources must exist before the container starts, owned by you.
-mkdir -p "$here"/mdm_assets/{dataset/HumanML3D,body_models/smpl,glove,save,gt_vis}
+mkdir -p "$here"/mdm_assets/{dataset/HumanML3D,body_models/smpl,glove,save,gt_vis,t2m}
 
 CKPT='$(ls save/*50steps*/model*.pt | head -n 1)'
 run() { dc run --rm -e PYTHONPATH=/mdm mdm bash -c "CKPT=$CKPT; $1"; }

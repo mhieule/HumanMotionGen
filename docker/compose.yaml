@@ -6,6 +6,8 @@ services:
       context: .
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     working_dir: /mdm
+    # DataLoader workers pass batches through /dev/shm; Docker's 64 MB default crashes the eval.
+    shm_size: 8gb
     volumes:
       # Everything large or generated lives in ../mdm_assets on the host.
       - ../mdm_assets/dataset/HumanML3D:/mdm/dataset/HumanML3D
@@ -13,6 +15,8 @@ services:
       - ../mdm_assets/glove:/mdm/glove
       - ../mdm_assets/save:/mdm/save
       - ../mdm_assets/gt_vis:/mdm/gt_vis
+      # Guo et al. T2M evaluators (prepare/download_t2m_evaluators.sh), for eval.eval_humanml
+      - ../mdm_assets/t2m:/mdm/t2m
       - ../scripts:/mdm/scripts:ro
     deploy:
       resources:

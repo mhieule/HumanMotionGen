@@ -36,3 +36,8 @@ Zone.Identifier
 *:Zone.Identifier
 .vscode/
 .idea/
+
+# Third-party baseline repos (own venvs, checkpoints); set up per scripts/compare/setup_baselines.sh
+baselines/
+# Side-by-side outputs
+comparisons/

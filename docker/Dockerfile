@@ -42,5 +42,12 @@ RUN git clone https://github.com/GuyTevet/motion-diffusion-model.git /mdm \
 RUN python -c "import clip; clip.load('ViT-B/32', device='cpu')" \
     && chmod -R a+rwX /home/mdm
 
+# eval/eval_humanml.py imports train.train_platforms (needs wandb); train/training_loop.py needs blobfile.
+RUN pip install wandb==0.15.12 blobfile==2.1.1
+
+# Train and eval cache each processed split as ./dataset/t2m_<split>.npy. Point it into
+# the mounted save/ folder, so the host uid can write it and it survives --rm.
+RUN for s in train val test; do ln -s /mdm/save/.cache_t2m_$s.npy /mdm/dataset/t2m_$s.npy; done
+
 WORKDIR /mdm
 CMD ["bash"]
