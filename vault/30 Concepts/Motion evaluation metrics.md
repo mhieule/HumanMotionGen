@@ -3,11 +3,8 @@ tags: [concept, evaluation]
 ---
 # Motion evaluation metrics
 
-> [!abstract] Primer (replace with your own words)
+> [!abstract] Primer 
 > Text-to-motion results are usually measured with a pretrained **text–motion evaluator** (Guo et al., 2022) that embeds motions and texts. **FID** compares the feature distributions of real and generated motions (realism). **R-Precision** and **MM-Dist** check whether a motion matches its text. **Diversity** and **MultiModality** measure variety. Physical metrics (foot skating, floating, penetration) matter most for robots.
-
-## In my words
-
 
 ## Metrics
 | Metric | Measures | Better |

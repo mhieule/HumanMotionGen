@@ -94,8 +94,47 @@ Pretrained `humanml_enc_512_50steps`, `wo_mm` protocol (1000 test prompts × 20 
 
 ## Notes
 
-**Hardware**: RTX5070ti, sudo right
+**Hardware:** RTX 5070 Ti, sudo rights.
+
+**Experiment strategy (like companies do):**
+- Start with small models so experiments are fast and we can train several times a week; scale down (e.g. sparse attention) if needed to fit.
+- Estimate rough scaling laws from the small models, then train the best-effort model at the end of the semester. The scaling laws need not be precise; what matters is a fair comparison: held-out val set, fixed val metrics, no data leaking between training and evaluation.
+- Plot **performance (y) against training time (x)** and decide from that.
+- Judge efficiency too: a loss can help but be expensive to compute. We want a quantifiable measure of a method's efficiency.
+- Train from scratch first; fine-tune later only if it makes sense.
+- Ignore inference-only methods and focus on models we can train: we learn more of the important details that way.
+
+**Evaluation metrics (open problem):**
+- Nail down which metrics we compare against the baseline, and whether we can afford to compute them. Check which metrics papers use.
+- FID is expensive: how many generated and ground-truth samples are needed? Check the literature, also for alternatives and new metrics.
+- Test prompts must be challenging. Quantify it, e.g. as hard as the hardest 5% of dataset prompts; also check how often a prompt repeats in the dataset.
+- VLMs (vision-language models): use only for evaluation.
+
+**Text encoder:** CLIP compresses a text into a single vector, which may be too coarse. Look at the HumanML3D captions to judge this, and measure how swapping the encoder changes performance. SnapMoGen is similar to HumanML3D but has longer texts, so it can test the encoder.
+
+**Architecture:** diffusion trends start in image/video generation and later reach niches like motion generation.
+
+**Models to start from:**
+- **SALAD:** good starting point, few tricks.
+- **MotionHiFlow:** a hierarchy plus latents (e.g. a ~100-frame sequence split into 20 chunks, one latent per chunk) cuts training compute. Use it only if we can explain why the hierarchy helps.
+- Start with text → motion; add scene conditioning (motion + scene + text) later.
+
+**Losses:**
+- Closed-source models as a loss: not differentiable, usable only via RL (reinforcement learning).
+- Open models as a loss: expensive, try later.
+
+**High-level world models (Q1):** too expensive for the course, and physical constraints do not hold. Possibly useful for data generation.
 
 ## Action items
+- [ ] Train MDM, SALAD and MotionHiFlow: where we are, how long it takes, which parameters
+- [ ] Fix the dataset: HumanML3D plus a set of complicated prompts
+- [ ] Research FID: how many samples are needed, how expensive it is, and alternatives
+- [ ] Look at new papers for new metrics
+- [ ] Plot methods side by side (e.g. MotionHiFlow architecture vs. SALAD loss); they may turn out similar, or show useful failure cases
+- [ ] Send results on Teams
 
 ## Decisions
+- Fixed dataset: HumanML3D with complicated prompts.
+- Train from scratch first, fine-tune later.
+- Focus on trainable models; skip inference-only ones.
+- Small models and fast iteration first, best-effort model at the end of the semester.
