@@ -37,6 +37,15 @@ Host motionpc
 ~/runs/E###          # checkpoints + logs per experiment
 ```
 
+## Known problem: attention kernel (found 2026-11-14)
+> [!warning] On this GPU (RTX 5070 Ti, PyTorch 2.7.1 + CUDA 12.8) PyTorch's memory-efficient attention kernel returns wrong values and gradients for **float32 attention with head size > 64**.
+> Anything using `nn.MultiheadAttention`, `nn.TransformerEncoder` or `F.scaled_dot_product_attention` that way is affected: MDM (head size 128) training diverges after ~600 steps, sampling is slightly off.
+> Full write-up and checklist for new models: [[Attention kernel bug on the lab PC]]
+- Fix: `torch.backends.cuda.enable_mem_efficient_sdp(False)` at the top of every script (all scripts in `experiments/` have it).
+- Stock MDM commands: `.venv/bin/python ../../scripts/fixed_attention.py -m sample.generate ...`
+- Test: `<env>/bin/python -W ignore scripts/check_attention_kernel.py` in each model's environment. Re-run it after any PyTorch or driver update.
+- Details: [[E003 - MDM-50 baseline training run]]
+
 ## Training on 10–12 GB
 - **Precompute text embeddings** once (essential for T5-XXL, LLM2Vec or Qwen encoders), so the encoder never sits in GPU memory during training
 - Large text encoders on the **CPU at inference** (Kimodo: `TEXT_ENCODER_DEVICE=cpu`)

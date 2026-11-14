@@ -48,6 +48,8 @@ Full tables incl. the 24-config val sweep, R@1, TMR similarity and physics: `exp
 - **Caveat on best-of-N:** combined with APG it reaches R@3 0.805 and MM-Dist 2.977, i.e. *above* real motions (0.799 / 2.973). TMR and the T2M evaluator were trained on the same HumanML3D train split, so part of this is the verifier agreeing with the evaluator, not better motion. Needs a visual check and ideally a retrieval model with other training data.
 - **Physics is not fixed by any sampler**: foot sliding 7.0–7.4 cm/s for every config vs 4.8 for real motions. This needs training-side changes (Tier 1–3, e.g. GRPO with physics rewards).
 
+- **Kernel recheck (2026-11-14).** These numbers were sampled with PyTorch's faulty memory-efficient attention kernel on the lab PC ([[E003 - MDM-50 baseline training run]]). Re-evaluated with the fix, same seeds, test, 20 reps: CFG 2.5 FID 0.552 ± 0.047 (above: 0.567), APG scale 4 FID 0.444 ± 0.047 (above: 0.463); R@3 0.751 / 0.752, MM-Dist, Diversity, TMR and foot sliding unchanged to the second decimal. APG's gain is unchanged (−20%). Interval CFG and best-of-N were not re-run.
+
 ## Conclusion / next
 - Use **APG (scale 4, η = 0)** as MDM's default sampler from now on: −18% FID at no cost. Re-check on retrained models (Tier 1), since the best scale may move.
 - Report best-of-N separately with its 4.6× cost and the evaluator-agreement caveat.

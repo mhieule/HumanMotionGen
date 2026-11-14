@@ -96,6 +96,10 @@ The first start spends ~5 min turning the training split into a cache (`dataset/
 
 ### 4.2 Full run: reproduce MDM-50
 
+> **Use `experiments/baseline/run_e003.sh` for the real baseline run** (see `experiments/baseline/README.md`): it trains the released recipe with dense logging and evaluates checkpoints in a separate process. The command below is MDM's README recipe, which adds `--mask_frames --use_ema`; the released checkpoint was trained **without** `--mask_frames`, so this is not an exact reproduction of it.
+>
+> **RTX 50xx:** run MDM's own commands through `../../scripts/fixed_attention.py -m <module> ...` (see Troubleshooting, "loss jumps back up").
+
 The README's command for the 50-step model (the one we evaluated, FID 0.53 vs. 0.49 in the authors' log), plus in-training evaluation and TensorBoard:
 
 ```bash
@@ -159,6 +163,7 @@ Reference numbers (pretrained MDM-50, standard evaluator): R-top3 0.749 · FID 0
 | Symptom | Fix |
 |---|---|
 | `CUDA error: no kernel image is available` / `sm_120 ... not compatible` | PyTorch build too old for the GPU. Re-run `STEPS=venv scripts/setup_mdm.sh` (default is 2.7.1 + cu128). For a newer version: `TORCH="torch==2.8.0 torchvision==0.23.0" STEPS=venv scripts/setup_mdm.sh`. |
+| Training loss falls for ~500 steps, then jumps back to ~1.1 and stays there; gradient norm in the hundreds or more | PyTorch's memory-efficient attention kernel is wrong on this GPU for float32 attention with head size > 64 (seen on RTX 5070 Ti, PyTorch 2.7.1 + CUDA 12.8; MDM's head size is 128; write-up in `vault/80 Setup/Attention kernel bug on the lab PC.md`). Test with `baselines/mdm/.venv/bin/python scripts/check_attention_kernel.py`. Fix: `torch.backends.cuda.enable_mem_efficient_sdp(False)`, or run stock MDM modules via `.venv/bin/python ../../scripts/fixed_attention.py -m train.train_mdm ...`. Sampling and evaluation are affected too (slightly). |
 | `torch.cuda.is_available()` is False | Driver missing or too old: `nvidia-smi` must work and show ≥ 570 for RTX 50xx. |
 | gdown: "Too many users have viewed or downloaded this file" | Google Drive quota. Wait a few hours and re-run `STEPS="assets dataset" scripts/setup_mdm.sh`; partial downloads resume. |
 | `ModuleNotFoundError: pkg_resources` | setuptools too new for wandb 0.15: `uv pip install --python baselines/mdm/.venv "setuptools<70"`. |

@@ -25,3 +25,4 @@ tags: [experiments, index]
 | E002 | Sampler only: APG scale 4, η=0 (vs. CFG 2.5) | 0.463 (base 0.567) | 0.753 (0.750) | 3.310 (3.338) | 9.70 (9.84) | 50 | ✅ free −18% FID → new default sampler |
 | E002 | Sampler only: APG + best-of-4 (TMR verifier) | 0.374 | 0.805 | 2.977 | 9.77 | 50 ×4 | ⚠️ 4.6× cost; R@3 above real data → verifier/evaluator overlap |
 | E002 | Sampler only: interval CFG (steps 8–49) | 0.593 | 0.752 | 3.343 | 9.84 | 50 | ❌ no gain |
+| E003 | MDM-50 baseline, released recipe, 750k steps (running since 2026-11-14) | | | | | 50 | 🔄 learning curves + proxy length; found faulty attention kernel on the lab PC |

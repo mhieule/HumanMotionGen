@@ -36,6 +36,8 @@ ours.add_argument('--apg_norm', type=float, default=0.0, help='RMS threshold of 
 ours.add_argument('--best_of', type=int, default=1)
 ours.add_argument('--verifier', default='tmr', choices=['tmr', 'tmr_phys'])
 ours.add_argument('--gt_reference', action='store_true', help='also score real motions (TMR, physics)')
+ours.add_argument('--weights', default='auto', choices=['auto', 'raw', 'ema'],
+                  help="which weights of the checkpoint; auto = EMA if the model was trained with --use_ema")
 mine, rest = ours.parse_known_args()
 sys.argv = [sys.argv[0]] + rest
 
@@ -53,6 +55,9 @@ from guidance import GuidedModel, BestOfNDiffusion  # noqa: E402
 from scoring import TMRScorer, make_verifier, physics, PHYS_KEYS  # noqa: E402
 
 torch.multiprocessing.set_sharing_strategy('file_system')
+# PyTorch's memory-efficient attention kernel is wrong on the lab PC's GPU (see
+# scripts/check_attention_kernel.py); the math kernel is what MDM's original PyTorch 1.x used.
+torch.backends.cuda.enable_mem_efficient_sdp(False)
 
 
 def summarize(values):
@@ -88,7 +93,10 @@ def main():
     gen_loader = get_dataset_loader(name=args.dataset, batch_size=32, num_frames=None, split=mine.split, hml_mode='eval',
                                     fixed_len=0, pred_len=0, device=dev, autoregressive=False)
     model, diffusion = create_model_and_diffusion(args, gen_loader)
-    load_saved_model(model, args.model_path, use_avg=args.use_ema)
+    use_avg = args.use_ema if mine.weights == 'auto' else mine.weights == 'ema'
+    if use_avg:  # load_saved_model silently falls back to the raw weights
+        assert 'model_avg' in torch.load(args.model_path, map_location='cpu'), 'checkpoint has no EMA weights'
+    load_saved_model(model, args.model_path, use_avg=use_avg)
     model.to(dev)
     model.eval()
 
