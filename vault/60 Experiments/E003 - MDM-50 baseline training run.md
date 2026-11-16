@@ -24,7 +24,7 @@ r_precision_top3:
 - **Recipe = the released checkpoint's `args.json`**: `--dataset humanml --diffusion_steps 50`, seed 10, batch 64, lr 1e-4, **no `--mask_frames`**, 750k steps (the released checkpoint is from step 750k). `--use_ema` only keeps an averaged copy; the raw weights are the reproduction.
 - Command: `experiments/baseline/run_e003.sh` (tmux `e003-train`, `e003-eval`, `e003-tb`). Run directory: `mdm_assets/save/E003_mdm50_baseline/`.
 - Logging: every 100 steps to TensorBoard (`http://localhost:6006`) and `train_log.jsonl`; checkpoint every 5k steps, all kept.
-- Evaluation in a separate process, **val** split, raw and EMA weights: benchmark (1000 motions × 3 reps, CFG 2.5) every 5k to 50k, 10k to 200k, 25k to 750k; held-out denoising loss; APG scale 4 every 50k; **test** (20 reps) at 600k and 750k only.
+- Evaluation in a separate process, **val** split, raw and EMA weights: benchmark (1000 motions × 3 reps, CFG 2.5) every 5k to 50k, 10k to 200k, 25k to 750k; held-out denoising loss; APG scale 4 every 50k (monitoring only: comparisons use CFG 2.5, Tier 0 is deferred); **test** (20 reps) at 600k and 750k only.
 - **Proxy-length criterion:** FID, R-top3 and MM-Dist all within **5%** / **10%** of their final values, from that checkpoint on (`analyze.py`).
 - Hardware: lab PC, RTX 5070 Ti, ~5.4 steps/s alone, 4 GB VRAM. Expected ~2.2 days including evaluation.
 - Design, all decisions and deviations from the released recipe: `docs/superpowers/specs/2026-11-14-mdm-baseline-run-design.md`. Harness: `experiments/baseline/README.md`.

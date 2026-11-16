@@ -9,12 +9,13 @@ Curated from recent image/video generation work (knowledge up to ~mid-2026, not 
 
 ## Suggested order
 1. Flow matching + logit-normal timesteps + RoPE
-2. Interval CFG / APG (sampling only, no retraining)
-3. Dispersive loss vs. REPA (ablation)
-4. Contrastive Flow Matching
-5. GRPO post-training (physics + TMR rewards)
-6. Adversarial fine-tuning
-7. Latent diffusion / few-step / streaming — only if speed or long-horizon matters
+2. Dispersive loss vs. REPA (ablation)
+3. Contrastive Flow Matching
+4. GRPO post-training (physics + TMR rewards)
+5. Adversarial fine-tuning
+6. Latent diffusion / few-step / streaming — only if speed or long-horizon matters
+
+**Deferred:** interval CFG / APG / best-of-N (sampling only). Tested in [[E002 - Inference-time guidance on MDM (Tier 0)]]; set aside on 2026-11-16, all comparisons use MDM's default sampler (CFG 2.5). Revisit at the end of the semester if time allows.
 
 ---
 

@@ -51,6 +51,7 @@ Full tables incl. the 24-config val sweep, R@1, TMR similarity and physics: `exp
 - **Kernel recheck (2026-11-14).** These numbers were sampled with PyTorch's faulty memory-efficient attention kernel on the lab PC ([[E003 - MDM-50 baseline training run]]). Re-evaluated with the fix, same seeds, test, 20 reps: CFG 2.5 FID 0.552 ± 0.047 (above: 0.567), APG scale 4 FID 0.444 ± 0.047 (above: 0.463); R@3 0.751 / 0.752, MM-Dist, Diversity, TMR and foot sliding unchanged to the second decimal. APG's gain is unchanged (−20%). Interval CFG and best-of-N were not re-run.
 
 ## Conclusion / next
-- Use **APG (scale 4, η = 0)** as MDM's default sampler from now on: −18% FID at no cost. Re-check on retrained models (Tier 1), since the best scale may move.
+- **Decision (2026-11-16): not adopted for now.** All comparisons keep MDM's default sampler (CFG 2.5); the sampler differences are set aside. Tier 0 (APG, best-of-N, the open checks below) is revisited at the end of the semester if time allows, on the final model.
+- Best result for that revisit: APG (scale 4, η = 0), −18% FID at no extra cost on the released checkpoint.
 - Report best-of-N separately with its 4.6× cost and the evaluator-agreement caveat.
-- Next: visual comparison of samples; then Tier 1 (flow matching, logit-normal timesteps, RoPE) on the proxy protocol.
+- Open for the revisit: visual comparison of samples; best-of-N with a verifier not trained on HumanML3D (KIT-ML TMR).
